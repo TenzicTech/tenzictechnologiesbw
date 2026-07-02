@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+
+<h2>THIS IS WHERE YOU WILL CHECKOUT FOR PRODUCTS ADDED TO YOUR CART.</h2>
+<p>Please confirm that you have added the correct products that you want and that the amount is correct before checking out.
+  <br>NOTE: For more details and services <a href="services.html">call our agents</a> and for featured customer service.
+  <br><a href="index.html">Create An Account.</a>
+</p>
+<h3>
+  WE APPRECIATE YOUR COOPERATION AND THANK YOU FOR VISITING OUR WEBSITE.
+</h3>
+<div class="row">
+  <div class="col-75">
+    <div class="container">
+      <form id="checkoutForm" action="/api/checkout" method="POST">
+        <input type="hidden" name="_csrf" id="csrfToken">
+        <div class="row">
+          <div class="col-50">
+            <h3>Billing Address</h3>
+            <label for="fname"><i class="fa fa-user"></i> Full Name</label>
+            <input type="text" id="fname" name="firstname" placeholder="Pitso P Sethibe">
+            <label for="email"><i class="fa fa-envelope"></i> Email</label>
+            <input type="text" id="email" name="email" placeholder="Pitso@example.com">
+            <label for="adr"><i class="fa fa-address-card-o"></i> Residential Address</label>
+            <input type="text" id="adr" name="address" placeholder="Block 6 ,Plot 100">
+            <label for="district"><i class="fa fa-institution"></i>District</label>
+            <input type="text" id="district" name="district" placeholder="South-East">
+            <div class="row">
+              <div class="col-50">
+                <label for="town">Town</label>
+                <input type="text" id="town" name="town" placeholder="Gaborone">
+              </div>
+              <div class="col-50">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="Gaborone">
+              </div>
+            </div>
+          </div>
+          <div class="col-50">
+            <h3>Payment</h3>
+            <label for="fname">Accepted Cards</label>
+            <div class="icon-container">
+              <i class="fa fa-cc-visa" style="color:navy;"></i>
+              <i class="fa fa-cc-amex" style="color:blue;"></i>
+              <i class="fa fa-cc-mastercard" style="color:red;"></i>
+              <i class="fa fa-cc-discover" style="color:orange;"></i>
+            </div>
+            <label for="cname">Name on Card</label>
+            <input type="text" id="cname" name="cardname" placeholder="Pitso P Sethibe">
+            <label for="ccnum">Credit card number</label>
+            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">
+            <label for="expmonth">Exp Month</label>
+            <input type="text" id="expmonth" name="expmonth" placeholder="September">
+            <div class="row">
+              <div class="col-50">
+                <label for="expyear">Exp Year</label>
+                <input type="text" id="expyear" name="expyear" placeholder="2028">
+              </div>
+              <div class="col-50">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" name="cvv" placeholder="352">
+              </div>
+            </div>
+          </div>
+        </div>
+        <label>
+          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
+        </label>
+        <input type="submit" value="Continue to checkout" class="btn">
+      </form>
+    </div>
+  </div>
+  <div class="col-25">
+    <div class="container">
+      <h4>Cart <span class="price" style="color:black"><i class="fa fa-shopping-cart"></i></span></h4>
+      <div id="cartItems"></div>
+      <hr>
+      <p>Total <span class="price" style="color:black"><b id="totalPrice">P0</b></span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== NO LOCALHOST - Use relative paths =====
+const API_BASE = ''; // Empty means use same origin
+// Check authentication status
+async function checkAuthStatus() {
+  try {
+    const response = await fetch('/api/check-auth', {
+      credentials: 'include',
+    });
+    const data = await response.json();
+    if (!data.isAuthenticated) {
+      alert('Please log in to view and manage your cart.');
+      window.location.href = 'index.html'; // Redirect to login page
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error checking auth status:', error);
+    alert('Error checking authentication. Please try again.');
+    return false;
+  }
+}
+
+// Fetch CSRF token
+async function fetchCsrfToken() {
+  try {
+    const response = await fetch('/api/csrf-token', { credentials: 'include' });
+    const data = await response.json();
+    document.getElementById('csrfToken').value = data.csrfToken;
+    return data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    return null;
+  }
+}
+
+// Sync cart with backend
+async function syncCart(csrfToken) {
+  try {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const response = await fetch('/api/update-cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken, // Include CSRF token
+      },
+      body: JSON.stringify({ cart }),
+      credentials: 'include',
+    });
+    const data = await response.json();
+    if (!data.success) {
+      console.error('Cart sync failed:', data.message);
+      document.getElementById('cartItems').innerHTML = '<p>Failed to sync cart: ' + data.message + '</p>';
+    }
+  } catch (error) {
+    console.error('Error syncing cart:', error);
+    document.getElementById('cartItems').innerHTML = '<p>Error syncing cart. Please try again.</p>';
+  }
+}
+
+// Update cart (modify quantity or remove item)
+async function updateCart(index, action, value = null) {
+  try {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (action === 'updateQuantity') {
+      const quantity = parseInt(value);
+      if (quantity < 1) return; // Prevent invalid quantities
+      cart[index].quantity = quantity;
+    } else if (action === 'remove') {
+      cart.splice(index, 1);
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    const csrfToken = await fetchCsrfToken();
+    if (csrfToken) {
+      await syncCart(csrfToken); // Sync updated cart with server
+      await updateCartDisplay(); // Refresh display
+    } else {
+      document.getElementById('cartItems').innerHTML = '<p>Failed to load CSRF token.</p>';
+    }
+  } catch (error) {
+    console.error('Error updating cart:', error);
+    document.getElementById('cartItems').innerHTML = '<p>Error updating cart. Please try again.</p>';
+  }
+}
+
+// Fetch and display cart items and total price
+async function updateCartDisplay() {
+  try {
+    const response = await fetch('/api/total-price', { credentials: 'include' });
+    const data = await response.json();
+    const cartItemsContainer = document.getElementById('cartItems');
+    const totalPriceElement = document.getElementById('totalPrice');
+
+    if (data.success && data.cartItems.length > 0) {
+      cartItemsContainer.innerHTML = '';
+      data.cartItems.forEach((item, index) => {
+        const itemElement = document.createElement('div'); // Use div for better styling control
+        itemElement.className = 'cart-item';
+        itemElement.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>${item.name} (x${item.quantity})</span>
+            <div class="quantity-control" style="display: flex; align-items: center; gap: 0.5rem;">
+              <button onclick="updateCart(${index}, 'updateQuantity', ${item.quantity - 1})" aria-label="Decrease quantity">-</button>
+              <input type="number" value="${item.quantity}" min="1" onchange="updateCart(${index}, 'updateQuantity', this.value)" style="width: 50px; text-align: center;" aria-label="Quantity for ${item.name}">
+              <button onclick="updateCart(${index}, 'updateQuantity', ${item.quantity + 1})" aria-label="Increase quantity">+</button>
+            </div>
+            <span class="price">P${(item.price * item.quantity).toFixed(2)}</span>
+            <button class="remove-btn" onclick="updateCart(${index}, 'remove')" aria-label="Remove ${item.name}" style="background-color: #e74c3c; color: white; border: none; padding: 0.5rem; cursor: pointer; border-radius: 3px;">X</button>
+          </div>
+        `;
+        cartItemsContainer.appendChild(itemElement);
+      });
+      totalPriceElement.textContent = `P${data.total.toFixed(2)}`; // Use Pula
+      window.cartItems = data.cartItems;
+    } else {
+      cartItemsContainer.innerHTML = '<p>No items in cart.</p>';
+      totalPriceElement.textContent = 'P0';
+      window.cartItems = [];
+    }
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    document.getElementById('cartItems').innerHTML = '<p>Error loading cart. Please try again.</p>';
+    document.getElementById('totalPrice').textContent = 'P0';
+  }
+}
+
+// Handle form submission
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const billingInfo = Object.fromEntries(formData);
+
+  try {
+    const csrfToken = await fetchCsrfToken();
+    if (!csrfToken) {
+      alert('Failed to fetch CSRF token. Please try again.');
+      return;
+    }
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken, // Include CSRF token
+      },
+      body: JSON.stringify({ cartItems: window.cartItems || [], billingInfo }),
+      credentials: 'include',
+    });
+    const result = await response.json();
+    if (result.success) {
+      alert(result.message);
+      localStorage.removeItem('cart');
+      await syncCart(csrfToken);
+      await updateCartDisplay();
+    } else {
+      alert('Checkout failed: ' + result.message);
+    }
+  } catch (error) {
+    console.error('Error submitting checkout:', error);
+    alert('Checkout failed. Please try again.');
+  }
+});
+
+// Initialize on page load
+window.onload = async () => {
+  const isAuthenticated = await checkAuthStatus();
+  if (isAuthenticated) {
+    const csrfToken = await fetchCsrfToken();
+    if (csrfToken) {
+      await syncCart(csrfToken);
+      await updateCartDisplay();
+    } else {
+      document.getElementById('cartItems').innerHTML = '<p>Failed to load CSRF token.</p>';
+    }
+  }
+};
+</script>
+
+</body>
+</html>

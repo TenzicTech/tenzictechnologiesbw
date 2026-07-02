@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENZIC TECHNOLOGIES BW - CART</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="topnav">
+            <div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+            <a href="home.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="gadgets.html">Gadgets</a>
+            <a class="active" href="cart.html">Cart <span id="cartCount" style="background:#fff;color:#000;border-radius:50%;padding:0 6px;font-size:0.7rem;margin-left:4px;">0</span></a>
+            <a href="services.html">Services</a>
+            <div class="search-container">
+                <form id="search-form">
+                    <input type="text" placeholder="Search.." name="search" id="search-input">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="results-container" id="search-results" style="display: none;"></div>
+        </div>
+
+        <h2><b>YOUR <span class="gold">SHOPPING CART</span></b></h2>
+        <p>Review your selected items and proceed to checkout.</p>
+        <p><a href="products.html">← Continue Shopping</a></p>
+
+        <!-- Cart Table -->
+        <div class="table-wrapper">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    <!-- Cart items will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="cart-summary">
+            <p>Subtotal: P<span id="subtotal">0.00</span></p>
+            <p>Tax (14%): P<span id="tax">0.00</span></p>
+            <p class="total">Total: P<span id="total">0.00</span></p>
+            <button class="btn" onclick="proceedToCheckout()">Proceed to Checkout →</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== NO LOCALHOST - Use relative paths =====
+        const API_BASE = ''; // Empty means use same origin
+        // ===== Get cart from localStorage =====
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // ===== Render Cart =====
+        function renderCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Your cart is empty. <a href="products.html">Start shopping →</a></td></tr>';
+                updateSummary();
+                updateCartCount();
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td data-label="Image"><img src="${item.image}" alt="${item.name}" style="max-width:60px;border-radius:6px;"></td>
+                    <td data-label="Item">${item.name}</td>
+                    <td data-label="Price">P${item.price.toFixed(2)}</td>
+                    <td data-label="Quantity">
+                        <div class="quantity-control">
+                            <button onclick="updateQuantity(${index}, ${item.quantity - 1})">−</button>
+                            <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+                            <button onclick="updateQuantity(${index}, ${item.quantity + 1})">+</button>
+                        </div>
+                    </td>
+                    <td data-label="Total">P${(item.price * item.quantity).toFixed(2)}</td>
+                    <td data-label="Remove"><button class="remove-btn" onclick="removeItem(${index})">✕</button></td>
+                `;
+                cartItems.appendChild(row);
+            });
+
+            updateSummary();
+            updateCartCount();
+        }
+
+        // ===== Update Quantity =====
+        function updateQuantity(index, quantity) {
+            quantity = parseInt(quantity);
+            if (quantity < 1) quantity = 1;
+            cart[index].quantity = quantity;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // ===== Remove Item =====
+        function removeItem(index) {
+            if (confirm('Remove this item from your cart?')) {
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCart();
+            }
+        }
+
+        // ===== Update Summary =====
+        function updateSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const taxRate = 0.14;
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('tax').textContent = tax.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+        }
+
+        // ===== Update Cart Count Badge =====
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartCount');
+            if (badge) badge.textContent = count;
+        }
+
+        // ===== Proceed to Checkout =====
+        async function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            try {
+                const csrfToken = await getCsrfToken();
+                const response = await fetch('/api/update-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken,
+                    },
+                    body: JSON.stringify({ cart }),
+                    credentials: 'include',
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = 'billing.html';
+                } else {
+                    alert('Failed to sync cart: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error syncing cart:', error);
+                alert('Failed to sync cart. Please try again.');
+            }
+        }
+
+        // ===== Get CSRF Token =====
+        async function getCsrfToken() {
+            try {
+                const response = await fetch('/api/csrf-token', { credentials: 'include' });
+                const data = await response.json();
+                return data.csrfToken;
+            } catch (error) {
+                console.error('Error fetching CSRF token:', error);
+                return '';
+            }
+        }
+
+        // ===== Search =====
+        document.getElementById('search-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const query = document.getElementById('search-input').value.trim();
+            const container = document.getElementById('search-results');
+            container.style.display = 'block';
+            if (!query) {
+                container.innerHTML = '<p>Please enter a search term.</p>';
+                return;
+            }
+            try {
+                const res = await fetch(`/api/search?search=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+                if (!data.success || data.results.length === 0) {
+                    container.innerHTML = `<p>No results for "${query}".</p>`;
+                    return;
+                }
+                container.innerHTML = data.results.map(r =>
+                    `<div class="result-item"><h3><a href="${r.url}">${r.title}</a></h3><p>${r.description}</p></div>`
+                ).join('');
+            } catch (e) {
+                container.innerHTML = '<p>An error occurred.</p>';
+            }
+        });
+
+        // ===== Initial Render =====
+        renderCart();
+    </script>
+</body>
+</html>

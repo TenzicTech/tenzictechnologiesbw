@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENZIC TECHNOLOGIES BW</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* ===== OVERRIDES for index.html ===== */
+        
+        /* Force topnav to stay above everything */
+        .topnav {
+            z-index: 1000 !important;
+            position: relative;
+            overflow: visible !important;
+        }
+        .dropdown-content {
+            z-index: 9999 !important;
+        }
+        .container {
+            overflow: visible !important;
+        }
+
+        /* ---- DROPDOWN: Click to open, stays open until clicked again ---- */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown .dropbtn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.5rem 0.8rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 40px;
+            font-family: 'Inter', sans-serif;
+        }
+        .dropdown .dropbtn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .dropdown .dropbtn.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Caret using Unicode — GUARANTEED to show */
+        .dropdown .dropbtn .caret {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+        }
+        .dropdown .dropbtn.active .caret {
+            transform: rotate(180deg);
+            color: #ffffff;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 120%;
+            left: 0;
+            min-width: 220px;
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass-strong);
+            border-radius: var(--radius);
+            padding: 0.6rem 0;
+            box-shadow: var(--shadow-soft);
+        }
+        .dropdown-content.show {
+            display: block;
+            animation: dropFade 0.2s ease;
+        }
+        @keyframes dropFade {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .dropdown-content a {
+            font-weight: 400;
+            padding: 0.6rem 1.5rem;
+            display: block;
+            border-left: 2px solid transparent;
+            color: var(--text-muted);
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        .dropdown-content a:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-left-color: #ffffff;
+            color: #ffffff;
+        }
+
+        /* ---- Featured Slider – 3 items per slide ---- */
+        .featured-slider {
+            position: relative;
+            margin: 2rem 0 2.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-glass);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .featured-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+        .featured-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            padding: 1.2rem;
+        }
+        .featured-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .featured-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-glow-white);
+        }
+        .featured-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        .featured-card .name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 0.2rem;
+        }
+        .featured-card .price {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .featured-card .price small {
+            font-weight: 400;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            margin-left: 0.4rem;
+        }
+        .featured-card .btn-sm {
+            margin-top: 0.5rem;
+            padding: 0.3rem 1.2rem;
+            font-size: 0.8rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .featured-card .btn-sm:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* ---- SLIDER ARROWS ---- */
+        .featured-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.75) !important;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            color: #ffffff !important;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 999;
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-weight: 700 !important;
+            font-size: 2rem !important;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .featured-btn:hover {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 40px rgba(255,255,255,0.15);
+        }
+        .featured-btn.prev { left: 12px; }
+        .featured-btn.next { right: 12px; }
+
+        /* ---- SLIDER DOTS ---- */
+        .featured-dots {
+            text-align: center;
+            padding: 0.8rem 0 0.2rem;
+        }
+        .featured-dots .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 6px;
+            background: rgba(255,255,255,0.25) !important;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .featured-dots .dot.active {
+            background: #ffffff !important;
+            transform: scale(1.4);
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+            border-color: #ffffff;
+        }
+
+        /* ---- Login/Signup Forms - better spacing ---- */
+        #login-form, #signup-form, #forgot-password-form {
+            max-width: 480px;
+            margin: 2rem auto;
+            padding: 2rem 2.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+        }
+        #login-form h2, #signup-form h2, #forgot-password-form h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.7rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+        .form-group button {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group button:hover {
+            background: #fff;
+            color: #000;
+        }
+        .form-switch {
+            text-align: center;
+            margin-top: 1.2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .form-switch a {
+            color: #ffffff;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+        }
+        .form-switch a:hover {
+            border-bottom-color: #ffffff;
+        }
+        .show-password {
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-muted) !important;
+            font-size: 0.8rem !important;
+            padding: 0.3rem 0 !important;
+            cursor: pointer;
+            transition: var(--transition);
+            width: auto !important;
+        }
+        .show-password:hover {
+            color: #ffffff !important;
+            background: transparent !important;
+        }
+        .error-message {
+            color: #fca5a5;
+            font-size: 0.8rem;
+            display: none;
+            margin-top: 0.3rem;
+        }
+        .alert {
+            padding: 0.8rem 1.2rem;
+            border-radius: 40px;
+            margin: 0.8rem 0;
+            display: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 992px) {
+            .featured-slide {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            #login-form, #signup-form, #forgot-password-form {
+                padding: 1.5rem 1.2rem;
+                margin: 1rem auto;
+            }
+            .topnav {
+                flex-wrap: wrap;
+                gap: 0.3rem;
+                padding: 0.8rem 1rem;
+            }
+            .topnav a, .topnav .dropbtn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.85rem;
+            }
+            .dropdown-content {
+                position: static;
+            }
+        }
+        @media (max-width: 600px) {
+            .featured-slide {
+                grid-template-columns: 1fr;
+            }
+            .featured-card img {
+                height: 120px;
+            }
+            .featured-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.4rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== TOP NAVIGATION ===== -->
+        <div class="topnav">
+            <div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+             <!-- Hamburger Button -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+            <a href="home.html">Explore</a>
+            <a href="products.html">COMPUTER PRODUCTS</a>
+            <a href="gadgets.html">GADGETS</a>
+            <a href="services.html">SERVICES</a>
+            <div class="search-container">
+                <form id="search-form">
+                    <input type="text" placeholder="Search.." name="search" id="search-input">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="results-container" id="search-results" style="display: none;"></div>
+        </div>
+
+        <!-- ===== FEATURED PRODUCTS SLIDER ===== -->
+        <div class="featured-slider" id="featuredSlider">
+            <div class="featured-track" id="featuredTrack">
+                <!-- SLIDE 1: Monitors -->
+                <div class="featured-slide">
+                    <div class="featured-card">
+                        <img src="images/monitors/ACER/19 inches/download (1).jpg" alt="Acer 19 LED">
+                        <div class="name">Acer 19" LED</div>
+                        <div class="price">P699 <small>P799</small></div>
+                        <button class="btn-sm" onclick="addToCart('Acer 19 LED', 699.99, 'images/monitors/ACER/19 inches/download (1).jpg')">Add to Cart</button>
+                    </div>
+                    <div class="featured-card">
+                        <img src="images/monitors/DELL/22 inches/download.jpg" alt="Dell 22 IPS">
+                        <div class="name">Dell 22" IPS</div>
+                        <div class="price">P999</div>
+                        <button class="btn-sm" onclick="addToCart('Dell 22 IPS', 999.99, 'images/monitors/DELL/22 inches/download.jpg')">Add to Cart</button>
+                    </div>
+                    <div class="featured-card">
+                        <img src="images/monitors/HP/22 inches/download (2).jpg" alt="HP 22 IPS">
+                        <div class="name">HP 22" IPS</div>
+                        <div class="price">P799 <small>P899</small></div>
+                        <button class="btn-sm" onclick="addToCart('HP 22 IPS', 799.99, 'images/monitors/HP/22 inches/download (2).jpg')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- SLIDE 2: Desktops -->
+                <div class="featured-slide">
+                    <div class="featured-card">
+                        <img src="images/desktops/SMALL FACTOR/DELL/download (1).jpg" alt="Dell SFF i5">
+                        <div class="name">Dell SFF i5</div>
+                        <div class="price">P1,499</div>
+                        <button class="btn-sm" onclick="addToCart('Dell SFF i5', 1499.99, 'images/desktops/SMALL FACTOR/DELL/download (1).jpg')">Add to Cart</button>
+                    </div>
+                    <div class="featured-card">
+                        <img src="images/desktops/MINI PC/ACER/download (3).jpg" alt="Acer Mini i3">
+                        <div class="name">Acer Mini i3</div>
+                        <div class="price">P1,699</div>
+                        <button class="btn-sm" onclick="addToCart('Acer Mini i3', 1699.99, 'images/desktops/MINI PC/ACER/download (3).jpg')">Add to Cart</button>
+                    </div>
+                    <div class="featured-card">
+                        <img src="images/desktops/TOWER/HP/download (1).jpg" alt="HP Tower i5">
+                        <div class="name">HP Tower i5</div>
+                        <div class="price">P2,499</div>
+                        <button class="btn-sm" onclick="addToCart('HP Tower i5', 2499.99, 'images/desktops/TOWER/HP/download (1).jpg')">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: Laptops -->
+                <div class="featured-slide">
+                    <div class="featured-card">
+                        <img src="images/laptops/I5/DELL/download (1).jpg" alt="Dell i5 8GB">
+                        <div class="name">Dell i5 8GB</div>
+                        <div class="price">P519</div>
+                        <button class="btn-sm" onclick="addToCart('Dell i5 8GB', 519.99, 'images/laptops/I5/DELL/download (1).jpg')">Add to Cart</button>
+                    </div>
+                    <div class="featured-card">
+                        <img src="images/laptops/I7/ACER/download (1).jpg" alt="Acer i7 16GB">
+                        <div class="name">Acer i7 16GB</div>
+                        <div class="price">P689</div>
+                        <button class="btn-sm" onclick="addToCart('Acer i7 16GB', 689.99, 'images/laptops/I7/ACER/download (1).jpg')">Add to Cart</button>
+                    </div>
+                    <div class="featured-card">
+                        <img src="images/laptops/I9/HP/download (1).jpg" alt="HP i9 32GB">
+                        <div class="name">HP i9 32GB</div>
+                        <div class="price">P1,009</div>
+                        <button class="btn-sm" onclick="addToCart('HP i9 32GB', 1009.99, 'images/laptops/I9/HP/download (1).jpg')">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <button class="featured-btn prev" onclick="moveFeatured(-1)"></button>
+            <button class="featured-btn next" onclick="moveFeatured(1)"></button>
+            <div class="featured-dots" id="featuredDots">
+                <span class="dot active" onclick="goToFeatured(0)"></span>
+                <span class="dot" onclick="goToFeatured(1)"></span>
+                <span class="dot" onclick="goToFeatured(2)"></span>
+            </div>
+        </div>
+
+        <!-- ===== INTRO TEXT ===== -->
+        <div class="intro-container">
+            <h2><div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div><b></b></h2>
+            <p>Your onestop shop for computer products, gadgets, software, and POS solutions.</p>
+        </div>
+
+        <!-- ===== LOGIN FORM ===== -->
+        <div id="login-form">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" placeholder="your@email.com" autocomplete="username" required>
+                    <span class="error-message" id="login-email-error">Please enter a valid email.</span>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+                    <button type="button" class="show-password" onclick="togglePassword('login-password')">Show Password</button>
+                    <span class="error-message" id="login-password-error">Password must be at least 8 characters.</span>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Login</button>
+                </div>
+                <div class="form-switch">
+                    <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                </div>
+                <div class="form-switch">
+                    Don't have an account? <a href="#" onclick="showSignup()">Sign up</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== SIGNUP FORM ===== -->
+        <div id="signup-form" style="display:none;">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" name="username" placeholder="Choose a username" autocomplete="username" required>
+                    <span class="error-message" id="signup-username-error">Username must be 3-20 characters.</span>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" name="email" placeholder="your@email.com" autocomplete="email" required>
+                    <span class="error-message" id="signup-email-error">Please enter a valid email.</span>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" name="password" placeholder="••••••••" autocomplete="new-password" required>
+                    <button type="button" class="show-password" onclick="togglePassword('signup-password')">Show Password</button>
+                    <span class="error-message" id="signup-password-error">Password must be 8+ with a number and special character.</span>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" autocomplete="new-password" required>
+                    <button type="button" class="show-password" onclick="togglePassword('confirm-password')">Show Password</button>
+                    <span class="error-message" id="confirm-password-error">Passwords do not match.</span>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Create Account</button>
+                </div>
+                <div class="form-switch">
+                    Already have an account? <a href="#" onclick="showLogin()">Login</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== FORGOT PASSWORD FORM ===== -->
+        <div id="forgot-password-form" style="display:none;">
+            <h2>Reset Password</h2>
+            <form id="forgotPasswordForm">
+                <div class="step active" id="step1">
+                    <div class="form-group">
+                        <label for="forgot-email">Email</label>
+                        <input type="email" id="forgot-email" name="email" placeholder="your@email.com" autocomplete="email" required>
+                        <span class="error-message" id="forgot-email-error">Please enter a valid email.</span>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" onclick="sendResetCode()">Send Verification Code</button>
+                    </div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="form-group">
+                        <label for="reset-code">Verification Code</label>
+                        <input type="text" id="reset-code" name="code" placeholder="6-digit code" required>
+                        <span class="error-message" id="reset-code-error">Invalid or expired code.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" name="password" placeholder="••••••••" autocomplete="new-password" required>
+                        <button type="button" class="show-password" onclick="togglePassword('new-password')">Show Password</button>
+                        <span class="error-message" id="new-password-error">Password must be 8+ with a number and special character.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-new-password">Confirm New Password</label>
+                        <input type="password" id="confirm-new-password" name="confirm-password" placeholder="••••••••" autocomplete="new-password" required>
+                        <button type="button" class="show-password" onclick="togglePassword('confirm-new-password')">Show Password</button>
+                        <span class="error-message" id="confirm-new-password-error">Passwords do not match.</span>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" onclick="resetPassword()">Reset Password</button>
+                    </div>
+                </div>
+            </form>
+            <div class="form-switch">
+                <a href="#" onclick="showLogin()">Back to Login</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    // ===== NO LOCALHOST - Use relative paths =====
+    const API_BASE = ''; // Empty means use same origin
+
+    // ===== Cart Function =====
+    function addToCart(name, price, image) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => item.name === name && item.image === image);
+        if (existing) existing.quantity += 1;
+        else cart.push({ name, price, image, quantity: 1 });
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`${name} added to cart!`);
+    }
+
+    // ===== Toggle Password =====
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const btn = input.nextElementSibling;
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = 'Hide Password';
+        } else {
+            input.type = 'password';
+            btn.textContent = 'Show Password';
+        }
+    }
+
+    // ===== Form Switching =====
+    function showSignup() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('signup-form').style.display = 'block';
+        document.getElementById('forgot-password-form').style.display = 'none';
+        fetchCsrfToken();
+    }
+
+    function showLogin() {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('forgot-password-form').style.display = 'none';
+        fetchCsrfToken();
+    }
+
+    function showForgotPassword() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('forgot-password-form').style.display = 'block';
+        document.getElementById('step1').classList.add('active');
+        document.getElementById('step2').classList.remove('active');
+        fetchCsrfToken();
+    }
+
+    // ===== CSRF =====
+    async function fetchCsrfToken() {
+        try {
+            const res = await fetch('/api/csrf-token', { 
+                method: 'GET',
+                credentials: 'include' 
+            });
+            const data = await res.json();
+            sessionStorage.setItem('csrfToken', data.csrfToken);
+        } catch (e) { 
+            console.error('CSRF error:', e); 
+        }
+    }
+
+    // ===== Login =====
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const csrfToken = sessionStorage.getItem('csrfToken');
+        
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-CSRF-Token': csrfToken 
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Login successful!');
+                window.location.href = 'accounts.html';
+            } else {
+                alert(data.message || 'Login failed.');
+            }
+        } catch (e) { 
+            alert('An error occurred.'); 
+        }
+    });
+
+    // ===== Signup =====
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('signup-username').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const csrfToken = sessionStorage.getItem('csrfToken');
+        
+        try {
+            const res = await fetch('/api/signup', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-CSRF-Token': csrfToken 
+                },
+                body: JSON.stringify({ username, email, password }),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Signup successful!');
+                window.location.href = `verify.html?email=${encodeURIComponent(email)}`;
+            } else {
+                alert(data.message || 'Signup failed.');
+            }
+        } catch (e) { 
+            alert('An error occurred.'); 
+        }
+    });
+
+    // ===== Forgot Password =====
+    async function sendResetCode() {
+        const email = document.getElementById('forgot-email').value;
+        const csrfToken = sessionStorage.getItem('csrfToken');
+        
+        try {
+            const res = await fetch('/api/forgot-password', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-CSRF-Token': csrfToken 
+                },
+                body: JSON.stringify({ email }),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Verification code sent.');
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+            } else {
+                alert(data.message);
+            }
+        } catch (e) { 
+            alert('An error occurred.'); 
+        }
+    }
+
+    async function resetPassword() {
+        const email = document.getElementById('forgot-email').value;
+        const code = document.getElementById('reset-code').value;
+        const newPassword = document.getElementById('new-password').value;
+        const csrfToken = sessionStorage.getItem('csrfToken');
+        
+        try {
+            const res = await fetch('/api/reset-password', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-CSRF-Token': csrfToken 
+                },
+                body: JSON.stringify({ email, code, newPassword }),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Password reset successfully. Please log in.');
+                showLogin();
+            } else {
+                alert(data.message);
+            }
+        } catch (e) { 
+            alert('An error occurred.'); 
+        }
+    }
+
+    // ===== Featured Slider =====
+    let featuredIndex = 0;
+    const featuredTrack = document.getElementById('featuredTrack');
+    const featuredDots = document.querySelectorAll('#featuredDots .dot');
+    const featuredSlides = document.querySelectorAll('.featured-slide');
+    const totalSlides = featuredSlides.length;
+
+    function updateFeatured() {
+        const offset = -featuredIndex * 100;
+        featuredTrack.style.transform = `translateX(${offset}%)`;
+        featuredDots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === featuredIndex);
+        });
+    }
+
+    function moveFeatured(dir) {
+        featuredIndex = (featuredIndex + dir + totalSlides) % totalSlides;
+        updateFeatured();
+    }
+
+    function goToFeatured(index) {
+        featuredIndex = index;
+        updateFeatured();
+    }
+
+    let featuredAuto = setInterval(() => moveFeatured(1), 6000);
+    const sliderEl = document.getElementById('featuredSlider');
+    sliderEl.addEventListener('mouseenter', () => clearInterval(featuredAuto));
+    sliderEl.addEventListener('mouseleave', () => {
+        featuredAuto = setInterval(() => moveFeatured(1), 6000);
+    });
+
+    // ===== Search =====
+    document.getElementById('search-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const query = document.getElementById('search-input').value.trim();
+        const container = document.getElementById('search-results');
+        container.style.display = 'block';
+        
+        if (!query) {
+            container.innerHTML = '<p>Please enter a search term.</p>';
+            return;
+        }
+        
+        try {
+            const res = await fetch(`/api/search?search=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            
+            if (data.redirect) {
+                window.location.href = data.redirect;
+                return;
+            }
+            if (!data.success || data.results.length === 0) {
+                container.innerHTML = `<p>No results for "${query}".</p>`;
+                return;
+            }
+            container.innerHTML = data.results.map(r =>
+                `<div class="result-item"><h3><a href="${r.url}">${r.title}</a></h3><p>${r.description}</p></div>`
+            ).join('');
+        } catch (e) {
+            container.innerHTML = '<p>An error occurred.</p>';
+        }
+    });
+
+    // ===== Init =====
+    window.onload = function() {
+        fetchCsrfToken();
+        showLogin();
+    };
+</script>
+</body>
+</html>

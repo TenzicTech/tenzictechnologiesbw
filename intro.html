@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+<h3 style="text-align:center">Introduction to <span>Point Of Sale (POS)</span><br></h3>
+<b style="text-align:center">
+  In this section we explain to our dear customers what is Point Of Sale (POS) and its fundamentals.
+  There is a wide range of Point Of Sale (POS) programs worldwide, but we offer basic and user-friendly POS programs.
+</b>
+<div class="par1">
+  <p>THIS IS A LIST OF POINT OF SALE PROGRAMS WE HAVE. ALL THE INFORMATION WILL BE DISPLAYED FOR YOU. KEEP SCROLLING</p><br>
+  <h3>ULTISALES</h3>
+  <div class="intro-container">
+    <div class="intro">
+      <h3>Ultisales is a retail and point of sale management solution designed for small to medium businesses</h3>
+    </div>
+    <div class="intro1">
+      <h4>
+        <b>Ultisales</b> is a point of sale solution that was specially designed for Southern Africa
+        <br>It offers an affordable, user-friendly platform with features like Inventory management,
+        <br>Multi-location support, Barcode scanning, Credit-card processing, Customer management, and Customizable reporting.
+      </h4>
+      <h4>
+        <b>Ultisales</b> is ideal for retailers needing scalable stock and transaction control.
+        <br>Ultisales offers 2 types of Ultisales programs: the Windows version & DOS version, and it also
+        <br>prices per user, with an annual fee for license renewal for the package selected by the user.
+      </h4>
+      <b>CLICK <b><a href="ultisalesW.html">BUY ULTISALES</a></b> to get Ultisales.</b>
+    </div>
+    <br>
+    <div class="intro2">
+      <h4>The video slideshow below shows an overview of ULTISALES and its versions</h4>
+      <div class="slideshow-container-video ultisales-slideshow">
+        <div class="slide-video">
+          <video src="videos/20250814_235429.mp4" controls alt="Ultisales Video 1"></video>
+        </div>
+        <div class="slide-video">
+          <video src="videos/video2.mp4" controls alt="Ultisales Video 2"></video>
+        </div>
+        <a class="prev-video" onclick="plusSlidesUltisales(-1)" aria-label="Previous slide">❮</a>
+        <a class="next-video" onclick="plusSlidesUltisales(1)" aria-label="Next slide">❯</a>
+        <div class="dot-container-video">
+          <span class="dot-video" onclick="currentSlideUltisales(1)"></span>
+          <span class="dot-video" onclick="currentSlideUltisales(2)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dar">
+  <h3>Retail Man</h3>
+  <div class="mid-container">
+    <div class="mid">
+      <h4>Retail Man POS is a comprehensive POS and inventory software for retail businesses</h4>
+    </div>
+    <div class="mid1">
+      <h4>
+        <b>Retail Man</b> transforms PCs into powerful sales systems and features a user-friendly interface.
+        <br>It supports Sales transactions, Inventory tracking, Customer relationship management,
+        <br>and Accounting integration. It handles multiple payment methods, barcode scanning,
+        <br>and detailed sales reporting.
+        <br>Multi-location support, Barcode scanning, Credit-card processing, Customer management, and Customizable reporting.
+      </h4>
+      <h4>
+        <b>Retail Man</b> is suitable for small and midsize retailers seeking efficient operations
+        <br>and seamless hardware integration (e.g., thermal printers, cash drawer).
+        <br>Retail Man prices per user, with an annual fee for license renewal for the package selected by the user.
+      </h4>
+     <b>CLICK <b><a href="retailman.html">BUY Reatil Man</a></b> to get Retail Man.</b>
+    </div>
+    <br>
+    <div class="mid2">
+      <h4>The video below shows an overview of the Retail Man platform</h4>
+      <div class="slideshow-container-video retailman-slideshow">
+        <div class="slide-video">
+          <video src="videos/20250815_001230.mp4" controls alt="Retail Man Video 1"></video>
+        </div>
+        <div class="slide-video">
+          <video src="videos/video4.mp4" controls alt="Retail Man Video 2"></video>
+        </div>
+        <a class="prev-video" onclick="plusSlidesRetailMan(-1)" aria-label="Previous slide">❮</a>
+        <a class="next-video" onclick="plusSlidesRetailMan(1)" aria-label="Next slide">❯</a>
+        <div class="dot-container-video">
+          <span class="dot-video" onclick="currentSlideRetailMan(1)"></span>
+          <span class="dot-video" onclick="currentSlideRetailMan(2)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== NO LOCALHOST - Use relative paths =====
+const API_BASE = ''; // Empty means use same origin
+// Ultisales Slideshow
+let ultisalesSlideIndex = 1;
+showSlidesUltisales(ultisalesSlideIndex);
+
+function plusSlidesUltisales(n) {
+  showSlidesUltisales(ultisalesSlideIndex += n);
+}
+
+function currentSlideUltisales(n) {
+  showSlidesUltisales(ultisalesSlideIndex = n);
+}
+
+function showSlidesUltisales(n) {
+  let slides = document.querySelectorAll('.ultisales-slideshow .slide-video');
+  let dots = document.querySelectorAll('.ultisales-slideshow .dot-video');
+  if (n > slides.length) { ultisalesSlideIndex = 1; }
+  if (n < 1) { ultisalesSlideIndex = slides.length; }
+  for (let i = 0; i < slides.length; i++) {
+    slides[i].classList.remove('active');
+  }
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].classList.remove('active');
+  }
+  slides[ultisalesSlideIndex - 1].classList.add('active');
+  dots[ultisalesSlideIndex - 1].classList.add('active');
+}
+
+// Retail Man Slideshow
+let retailManSlideIndex = 1;
+showSlidesRetailMan(retailManSlideIndex);
+
+function plusSlidesRetailMan(n) {
+  showSlidesRetailMan(retailManSlideIndex += n);
+}
+
+function currentSlideRetailMan(n) {
+  showSlidesRetailMan(retailManSlideIndex = n);
+}
+
+function showSlidesRetailMan(n) {
+  let slides = document.querySelectorAll('.retailman-slideshow .slide-video');
+  let dots = document.querySelectorAll('.retailman-slideshow .dot-video');
+  if (n > slides.length) { retailManSlideIndex = 1; }
+  if (n < 1) { retailManSlideIndex = slides.length; }
+  for (let i = 0; i < slides.length; i++) {
+    slides[i].classList.remove('active');
+  }
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].classList.remove('active');
+  }
+  slides[retailManSlideIndex - 1].classList.add('active');
+  dots[retailManSlideIndex - 1].classList.add('active');
+}
+</script>
+</div>
+</body>
+</html>

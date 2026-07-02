@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - TENZIC TECHNOLOGIES BW</title>
+</head>
+<body>
+    <div class="container">
+        <div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+        <div class="topnav">
+            <a href="home.html">Explore</a>
+            <a href="products.html">COMPUTER PRODUCTS</a>
+            <a href="gadgets.html">GADGETS</a>
+            <a href="services.html">SERVICES</a>
+            <div class="search-container">
+                <form action="search.html">
+                    <input type="text" placeholder="Search.." name="search">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+        <h2>Search Redirect</h2>
+        <div class="results-container" id="search-results"></div>
+    </div>
+    <script>
+        async function handleSearchRedirect() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('search')?.trim();
+            const resultsContainer = document.getElementById('search-results');
+
+            if (!query) {
+                resultsContainer.innerHTML = '<p>Please enter a search term.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/search?search=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else if (data.results && data.results.length > 0) {
+                    window.location.href = data.results[0].url;
+                } else {
+                    resultsContainer.innerHTML = `<p>No results found for "${query}".</p>`;
+                }
+            } catch (error) {
+                resultsContainer.innerHTML = '<p>An error occurred. Please try again.</p>';
+                console.error('Search error:', error);
+            }
+        }
+
+        window.onload = handleSearchRedirect;
+    </script>
+</body>
+</html>

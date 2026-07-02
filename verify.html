@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Email Verification - TENZIC TECHNOLOGIES BW</title>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Verify Your Email</h2>
+        <form id="verifyForm">
+            <div class="form-group">
+                <label for="verify-email">Email:</label>
+                <input type="email" id="verify-email" name="email" readonly required>
+                <span class="error-message" id="verify-email-error">Please enter a valid email.</span>
+            </div>
+            <div class="form-group">
+                <label for="verify-code">Verification Code:</label>
+                <input type="text" id="verify-code" name="code" required>
+                <span class="error-message" id="verify-code-error">Please enter a valid 6-digit code.</span>
+            </div>
+            <div class="form-group">
+                <button type="submit">Verify</button>
+            </div>
+        </form>
+        <div class="form-switch">
+            <a href="index.html">Back to Login</a>
+        </div>
+    </div>
+    <script>
+    // ===== NO LOCALHOST - Use relative paths =====
+    const API_BASE = ''; // Empty means use same origin
+
+    // Fetch CSRF token
+    async function fetchCsrfToken() {
+        try {
+            const response = await fetch('/api/csrf-token', { 
+                method: 'GET',
+                credentials: 'include' 
+            });
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const data = await response.json();
+            sessionStorage.setItem('csrfToken', data.csrfToken);
+        } catch (error) {
+            console.error('Failed to fetch CSRF token:', error);
+            alert('Failed to initialize form. Please refresh the page.');
+        }
+    }
+
+    // Get email from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    if (email) {
+        document.getElementById('verify-email').value = email;
+    }
+
+    // Verify form submission
+    document.getElementById('verifyForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let valid = true;
+
+        const email = document.getElementById('verify-email').value;
+        const emailError = document.getElementById('verify-email-error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            emailError.style.display = 'block';
+            valid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        const code = document.getElementById('verify-code').value.trim();
+        const codeError = document.getElementById('verify-code-error');
+        if (code.length !== 6 || isNaN(code)) {
+            codeError.style.display = 'block';
+            valid = false;
+        } else {
+            codeError.style.display = 'none';
+        }
+
+        if (valid) {
+            try {
+                const csrfToken = sessionStorage.getItem('csrfToken');
+                if (!csrfToken) throw new Error('CSRF token not found');
+                
+                const response = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify({ email, code }),
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Email verified successfully! Please log in.');
+                    window.location.href = 'index.html';
+                } else {
+                    document.getElementById('verify-code-error').style.display = 'block';
+                    alert(data.message || 'Verification failed. Please check the code and try again.');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                alert('An error occurred during verification. Please try again.');
+            }
+        }
+    });
+
+    // Fetch CSRF token on page load
+    window.onload = fetchCsrfToken;
+</script>
+</body>
+</html>
