@@ -133,7 +133,7 @@ a:hover { color: #ffffff; }
   margin-right: auto;
 }
 .brand span {
-  font-weight: 700;
+  font-weight: 130;
   background: linear-gradient(135deg, #ffffff, #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
