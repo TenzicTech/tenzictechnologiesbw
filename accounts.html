@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Management - TENZIC TECHNOLOGIES BW</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===== ACCOUNT PAGE STYLES ===== */
+        .account-section {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .account-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+
+        .account-section .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .account-section .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .account-section .form-group input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .account-section .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .account-section .form-group input:read-only {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .account-section .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .account-section .btn:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .account-section .btn-danger {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .account-section .btn-danger:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        .account-section .btn-block {
+            width: 100%;
+        }
+
+        .alert {
+            padding: 0.8rem 1.2rem;
+            border-radius: 40px;
+            margin: 0.8rem 0;
+            display: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .show-password {
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-muted) !important;
+            font-size: 0.8rem !important;
+            padding: 0.3rem 0 !important;
+            cursor: pointer;
+            transition: var(--transition);
+            width: auto !important;
+        }
+
+        .show-password:hover {
+            color: #ffffff !important;
+        }
+
+        .hidden-form {
+            display: none;
+        }
+
+        .warning-text {
+            color: #fca5a5;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .account-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ===== BRAND ===== -->
+        <div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+
+        <!-- ===== TOP NAV ===== -->
+        <div class="topnav">
+            <a href="home.html">Explore</a>
+            <a class="active" href="accounts.html">My Account</a>
+            <a href="products.html">Products</a>
+            <a href="gadgets.html">Gadgets</a>
+            <a href="services.html">Services</a>
+            <div class="form-switch" style="margin-left: auto;">
+                <a href="#" onclick="logout()" style="color: #fca5a5;">Logout</a>
+            </div>
+        </div>
+
+        <h1 style="margin-bottom: 2rem;">My Account</h1>
+
+        <!-- ===== PROFILE INFO ===== -->
+        <div class="account-section">
+            <h2><i class="fa fa-user" style="color: #fbbf24; margin-right: 0.5rem;"></i> Profile Information</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" readonly>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" readonly>
+            </div>
+        </div>
+
+        <!-- ===== UPDATE EMAIL ===== -->
+        <div class="account-section">
+            <h2><i class="fa fa-envelope" style="color: #fbbf24; margin-right: 0.5rem;"></i> Update Email</h2>
+
+            <!-- Step 1: Request Email Update -->
+            <form id="update-email-form">
+                <input type="hidden" id="csrf-token" name="_csrf">
+                <div class="form-group">
+                    <label for="new-email">New Email</label>
+                    <input type="email" id="new-email" placeholder="Enter your new email" required>
+                </div>
+                <button type="submit" class="btn btn-block">Request Email Update</button>
+                <div id="update-email-message" class="alert"></div>
+            </form>
+
+            <!-- Step 2: Verify Email -->
+            <form id="verify-email-form" class="hidden-form">
+                <input type="hidden" id="csrf-token-verify" name="_csrf">
+                <div class="form-group">
+                    <label for="verification-code">Verification Code</label>
+                    <input type="text" id="verification-code" placeholder="Enter 6-digit code" required>
+                </div>
+                <button type="submit" class="btn btn-block">Verify &amp; Update Email</button>
+                <div id="verify-email-message" class="alert"></div>
+            </form>
+        </div>
+
+        <!-- ===== CHANGE PASSWORD ===== -->
+        <div class="account-section">
+            <h2><i class="fa fa-lock" style="color: #fbbf24; margin-right: 0.5rem;"></i> Change Password</h2>
+            <form id="change-password-form">
+                <input type="hidden" id="csrf-token-password" name="_csrf">
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" placeholder="Enter current password" required>
+                    <button type="button" class="show-password" onclick="togglePassword('current-password')">Show</button>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" placeholder="Enter new password" required>
+                    <button type="button" class="show-password" onclick="togglePassword('new-password')">Show</button>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm new password" required>
+                    <button type="button" class="show-password" onclick="togglePassword('confirm-password')">Show</button>
+                </div>
+                <button type="submit" class="btn btn-block">Change Password</button>
+                <div id="change-password-message" class="alert"></div>
+            </form>
+        </div>
+
+        <!-- ===== DELETE ACCOUNT ===== -->
+        <div class="account-section" style="border-color: rgba(239, 68, 68, 0.2);">
+            <h2 style="color: #fca5a5;"><i class="fa fa-trash" style="color: #fca5a5; margin-right: 0.5rem;"></i> Delete Account</h2>
+            <p class="warning-text"><i class="fa fa-exclamation-triangle"></i> Warning: This action is irreversible!</p>
+            <button id="delete-account-btn" class="btn btn-danger btn-block">Delete My Account</button>
+            <div id="delete-account-message" class="alert"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="home.html" style="color: var(--text-muted);">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // ===== NO LOCALHOST - Use relative paths =====
+        const API_BASE = '';
+
+        // ===== Toggle Password =====
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const btn = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                input.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+
+        // ===== Show Message =====
+        function showMessage(elementId, message, type) {
+            const msgDiv = document.getElementById(elementId);
+            msgDiv.textContent = message;
+            msgDiv.className = `alert alert-${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // ===== Fetch CSRF Token =====
+        async function fetchCsrfToken() {
+            try {
+                const response = await fetch('/api/csrf-token', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (!response.ok) throw new Error(`Failed: ${response.status}`);
+                const { csrfToken } = await response.json();
+                document.getElementById('csrf-token').value = csrfToken;
+                document.getElementById('csrf-token-password').value = csrfToken;
+                document.getElementById('csrf-token-verify').value = csrfToken;
+                return csrfToken;
+            } catch (error) {
+                console.error('CSRF error:', error);
+                showMessage('update-email-message', 'Failed to initialize form.', 'danger');
+                return null;
+            }
+        }
+
+        // ===== Fetch User Details =====
+        async function fetchUserDetails() {
+            try {
+                const response = await fetch('/api/user', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                if (!response.ok) throw new Error(`Failed: ${response.status}`);
+                const data = await response.json();
+                if (!data.success) throw new Error(data.message);
+                document.getElementById('username').value = data.user.username || 'N/A';
+                document.getElementById('email').value = data.user.email || 'N/A';
+            } catch (error) {
+                console.error('Fetch user error:', error);
+                showMessage('update-email-message', 'Please log in to view your account.', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        }
+
+        // ===== REQUEST EMAIL UPDATE =====
+        let pendingEmail = '';
+
+        document.getElementById('update-email-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newEmail = document.getElementById('new-email').value.trim();
+            const csrfToken = document.getElementById('csrf-token').value;
+
+            if (!newEmail) {
+                showMessage('update-email-message', 'Please enter a valid email.', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/request-email-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify({ newEmail }),
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    pendingEmail = newEmail;
+                    showMessage('update-email-message', 'Verification code sent to your new email.', 'success');
+                    document.getElementById('update-email-form').style.display = 'none';
+                    document.getElementById('verify-email-form').style.display = 'block';
+                } else {
+                    showMessage('update-email-message', data.message || 'Failed to request email update.', 'danger');
+                }
+            } catch (error) {
+                console.error('Email update error:', error);
+                showMessage('update-email-message', 'Failed to request email update.', 'danger');
+            }
+        });
+
+        // ===== VERIFY EMAIL UPDATE =====
+        document.getElementById('verify-email-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const code = document.getElementById('verification-code').value.trim();
+            const csrfToken = document.getElementById('csrf-token-verify').value;
+
+            if (!code || code.length !== 6) {
+                showMessage('verify-email-message', 'Please enter a valid 6-digit code.', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/verify-email-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify({ newEmail: pendingEmail, code: code }),
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('verify-email-message', data.message, 'success');
+                    fetchUserDetails();
+                    document.getElementById('verify-email-form').style.display = 'none';
+                    document.getElementById('update-email-form').style.display = 'block';
+                    document.getElementById('new-email').value = '';
+                    document.getElementById('verification-code').value = '';
+                    pendingEmail = '';
+                } else {
+                    showMessage('verify-email-message', data.message || 'Invalid verification code.', 'danger');
+                }
+            } catch (error) {
+                console.error('Verify email error:', error);
+                showMessage('verify-email-message', 'Failed to verify email.', 'danger');
+            }
+        });
+
+        // ===== CHANGE PASSWORD =====
+        document.getElementById('change-password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const csrfToken = document.getElementById('csrf-token-password').value;
+
+            if (newPassword !== confirmPassword) {
+                showMessage('change-password-message', 'New passwords do not match.', 'danger');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showMessage('change-password-message', 'Password must be at least 8 characters.', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/password', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword }),
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('change-password-message', data.message, 'success');
+                    document.getElementById('change-password-form').reset();
+                } else {
+                    showMessage('change-password-message', data.message || 'Failed to change password.', 'danger');
+                }
+            } catch (error) {
+                console.error('Change password error:', error);
+                showMessage('change-password-message', 'Failed to change password.', 'danger');
+            }
+        });
+
+        // ===== DELETE ACCOUNT =====
+        document.getElementById('delete-account-btn').addEventListener('click', async function() {
+            if (!confirm('Are you sure you want to delete your account? This cannot be undone!')) {
+                showMessage('delete-account-message', 'Account deletion cancelled.', 'danger');
+                return;
+            }
+
+            const csrfToken = document.getElementById('csrf-token').value;
+
+            try {
+                const response = await fetch('/api/user', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('delete-account-message', data.message, 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    showMessage('delete-account-message', data.message || 'Failed to delete account.', 'danger');
+                }
+            } catch (error) {
+                console.error('Delete account error:', error);
+                showMessage('delete-account-message', 'Failed to delete account.', 'danger');
+            }
+        });
+
+        // ===== LOGOUT =====
+        async function logout() {
+            try {
+                const csrfToken = document.getElementById('csrf-token').value;
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Logged out successfully.');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Failed to log out.');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Failed to log out.');
+            }
+        }
+
+        // ===== INIT =====
+        window.onload = async function() {
+            await fetchCsrfToken();
+            await fetchUserDetails();
+        };
+    </script>
+</body>
+</html>

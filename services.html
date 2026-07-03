@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENZIC TECHNOLOGIES BW - Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===== SERVICES PAGE STYLES ===== */
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+        }
+
+        .services-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .services-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* ===== TEAM GRID ===== */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* ===== AGENT CARD ===== */
+        .agent-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ===== PROFILE IMAGE - CIRCLE WITH CLICK EFFECT ===== */
+        .profile-image-wrapper {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .profile-image-wrapper:hover {
+            border-color: #ffffff;
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .profile-image-wrapper:hover img {
+            transform: scale(1.1);
+        }
+
+        /* ===== CLICK OVERLAY ===== */
+        .profile-image-wrapper .click-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        .profile-image-wrapper:hover .click-overlay {
+            opacity: 1;
+        }
+
+        .profile-image-wrapper .click-overlay i {
+            color: #ffffff;
+            font-size: 2rem;
+            transform: scale(0.8);
+            transition: var(--transition);
+        }
+
+        .profile-image-wrapper:hover .click-overlay i {
+            transform: scale(1);
+        }
+
+        /* ===== AGENT INFO ===== */
+        .agent-card .agent-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.2rem;
+        }
+
+        .agent-card .agent-title {
+            font-size: 0.9rem;
+            color: #fbbf24;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .agent-card .agent-bio {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+        }
+
+        .agent-card .agent-email {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            word-break: break-all;
+        }
+
+        .agent-card .agent-email i {
+            margin-right: 0.5rem;
+            color: #fbbf24;
+        }
+
+        /* ===== AGENT BUTTONS ===== */
+        .agent-buttons {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .agent-buttons .btn {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.85rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .agent-buttons .btn:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .agent-buttons .btn-whatsapp {
+            border-color: rgba(37, 211, 102, 0.3);
+            color: #6ee7b7;
+        }
+
+        .agent-buttons .btn-whatsapp:hover {
+            background: #25d366;
+            color: #000000;
+            border-color: #25d366;
+        }
+
+        .agent-buttons .btn-email {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .agent-buttons .btn-email:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        /* ===== MODAL FOR IMAGE VIEW ===== */
+        .image-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            animation: modalFade 0.3s ease;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        @keyframes modalFade {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: var(--radius);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            object-fit: contain;
+        }
+
+        .image-modal .close-modal {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal .close-modal:hover {
+            background: #ffffff;
+            color: #000000;
+            transform: rotate(90deg);
+        }
+
+        .image-modal .modal-caption {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== INFO FOOTER ===== */
+        .services-footer {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .services-footer h4 {
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .services-footer h4 b {
+            color: #ffffff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .profile-image-wrapper {
+                width: 120px;
+                height: 120px;
+            }
+
+            .services-header h1 {
+                font-size: 2rem;
+            }
+
+            .agent-buttons .btn {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.8rem;
+            }
+
+            .image-modal img {
+                max-width: 95%;
+                max-height: 70vh;
+            }
+
+            .image-modal .modal-caption {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+                bottom: 2rem;
+            }
+
+            .image-modal .close-modal {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                top: 1rem;
+                right: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-image-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+
+            .agent-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .services-header {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ===== BRAND ===== -->
+        <div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+
+        <!-- ===== TOP NAV ===== -->
+        <div class="topnav">
+            <a class="active" href="home.html">HOME</a>
+            <a href="products.html">PRODUCTS</a>
+            <a href="gadgets.html">GADGETS</a>
+            <a href="softwares.html">SOFTWARE</a>
+        </div>
+
+        <!-- ===== SERVICES HEADER ===== -->
+        <div class="services-header">
+            <h1>Our Services</h1>
+            <p>We provide computer solutions, POS systems, and IT support for businesses and individuals.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.95rem;">
+                <b>TENZIC TECHNOLOGIES BW</b> agents are ready to assist you with any queries, complaints, enquiries, and services.
+            </p>
+        </div>
+
+        <!-- ===== TEAM GRID ===== -->
+        <div class="team-grid">
+
+            <!-- ===== AGENT 1: PITSO ===== -->
+            <div class="agent-card">
+                <div class="profile-image-wrapper" onclick="openModal('images/Pitso.jpg', 'Pitso Sethibe - CEO & Founder')">
+                    <img src="images/Pitso.jpg" alt="Pitso Sethibe">
+                    <div class="click-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="agent-name">Pitso Sethibe</div>
+                <div class="agent-title">CEO &amp; Founder</div>
+                <div class="agent-bio">
+                    We are TENZIC TECHNOLOGIES. How can we assist you today?
+                </div>
+                <div class="agent-email">
+                    <i class="fas fa-envelope"></i> brabuslove420@gmail.com
+                </div>
+                <div class="agent-buttons">
+                    <a href="mailto:brabuslove420@gmail.com" class="btn btn-email">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://wa.me/+26771378775" target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== AGENT 2: KHUMO ===== -->
+            <div class="agent-card">
+                <div class="profile-image-wrapper" onclick="openModal('images/Khumo.jpg', 'Khumo Sethibe - Agent')">
+                    <img src="images/Khumo.jpg" alt="Khumo Sethibe">
+                    <div class="click-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="agent-name">Khumo Sethibe</div>
+                <div class="agent-title">Agent</div>
+                <div class="agent-bio">
+                    I am proud to be your assistant. Contact me for help with any enquiry.
+                </div>
+                <div class="agent-email">
+                    <i class="fas fa-envelope"></i> elbrabus666@gmail.com
+                </div>
+                <div class="agent-buttons">
+                    <a href="mailto:elbrabus666@gmail.com" class="btn btn-email">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://wa.me/+26771378775" target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== AGENT 3: BOIPELO ===== -->
+            <div class="agent-card">
+                <div class="profile-image-wrapper" onclick="openModal('images/Boipelo.jpg', 'Boipelo Sethibe - Agent')">
+                    <img src="images/Boipelo.jpg" alt="Boipelo Sethibe">
+                    <div class="click-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="agent-name">Boipelo Sethibe</div>
+                <div class="agent-title">Agent</div>
+                <div class="agent-bio">
+                    I am glad to have you as our client. How can I assist you today?
+                </div>
+                <div class="agent-email">
+                    <i class="fas fa-envelope"></i> elpistoncup@gmail.com
+                </div>
+                <div class="agent-buttons">
+                    <a href="mailto:elpistoncup@gmail.com" class="btn btn-email">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://wa.me/+26771378775" target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="services-footer">
+            <h4>
+                <b>TENZIC TECHNOLOGIES BW</b> has agents waiting to assist you. Keeping our customers proud is our Agent's Motive.
+                <br>You can contact us and enquire on our products, services and more information about us.
+                <br><b>TENZIC TECHNOLOGIES BW</b> agents are always available from 0900hrs - 1800hrs (GMT +2:00).
+                <br>Your call is our command. Our command is to make you proud. Thank you for visiting us.
+            </h4>
+        </div>
+    </div>
+
+    <!-- ===== IMAGE MODAL ===== -->
+    <div class="image-modal" id="imageModal" onclick="closeModal()">
+        <button class="close-modal" onclick="event.stopPropagation(); closeModal();">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="modalImage" src="" alt="Profile">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
+    <script>
+        // ===== OPEN MODAL =====
+        function openModal(imageSrc, caption) {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImage');
+            const cap = document.getElementById('modalCaption');
+            
+            img.src = imageSrc;
+            cap.textContent = caption || 'Profile Image';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ===== CLOSE MODAL =====
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ===== CLOSE MODAL WITH ESC KEY =====
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

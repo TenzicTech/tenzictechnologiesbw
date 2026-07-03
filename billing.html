@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TENZIC TECHNOLOGIES - Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===== BILLING PAGE STYLES ===== */
+        .billing-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .billing-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+        }
+
+        .billing-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .billing-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .billing-header p a {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .billing-header p a:hover {
+            color: #ffffff;
+        }
+
+        /* ===== BILLING GRID ===== */
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* ===== FORM CONTAINER ===== */
+        .billing-form {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 2rem;
+        }
+
+        .billing-form h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+
+        .billing-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .billing-form .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .billing-form .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .billing-form .form-group label i {
+            margin-right: 0.5rem;
+            color: #fbbf24;
+        }
+
+        .billing-form .form-group input,
+        .billing-form .form-group select {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .billing-form .form-group input:focus,
+        .billing-form .form-group select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .billing-form .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* ===== PAYMENT ICONS ===== */
+        .payment-icons {
+            display: flex;
+            gap: 0.8rem;
+            margin: 0.5rem 0 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-icons i {
+            font-size: 2rem;
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .payment-icons i:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .payment-icons i.fa-cc-visa { color: #1a1f71; }
+        .payment-icons i.fa-cc-amex { color: #2e77d0; }
+        .payment-icons i.fa-cc-mastercard { color: #eb001b; }
+        .payment-icons i.fa-cc-discover { color: #ff6000; }
+
+        /* ===== CHECKBOX ===== */
+        .billing-form .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 1.2rem 0;
+            color: var(--text-muted);
+        }
+
+        .billing-form .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #fbbf24;
+            cursor: pointer;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .billing-form .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            margin-top: 0.5rem;
+        }
+
+        .billing-form .submit-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .billing-form .submit-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* ===== CART SIDEBAR ===== */
+        .cart-sidebar {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 2rem;
+            position: sticky;
+            top: 2rem;
+            align-self: start;
+        }
+
+        .cart-sidebar h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .cart-sidebar h4 .price {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .cart-sidebar h4 .price i {
+            margin-right: 0.3rem;
+            color: #fbbf24;
+        }
+
+        /* ===== CART ITEMS ===== */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item .item-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .cart-item .item-info span {
+            color: #ffffff;
+        }
+
+        .cart-item .item-price {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .cart-item .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .cart-item .quantity-control button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-item .quantity-control button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+        }
+
+        .cart-item .quantity-control input {
+            width: 40px;
+            text-align: center;
+            padding: 0.2rem;
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 0.85rem;
+        }
+
+        .cart-item .remove-btn {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0.2rem 0.4rem;
+        }
+
+        .cart-item .remove-btn:hover {
+            color: #fca5a5;
+            transform: scale(1.2);
+        }
+
+        /* ===== CART TOTAL ===== */
+        .cart-total {
+            border-top: 1px solid var(--border-glass);
+            padding-top: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .cart-total .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .cart-total .total-row.grand-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-glass);
+            margin-top: 0.5rem;
+        }
+
+        .cart-total .total-row.grand-total span:last-child {
+            color: #fbbf24;
+        }
+
+        /* ===== EMPTY CART ===== */
+        .empty-cart {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+        }
+
+        .empty-cart i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-sidebar {
+                position: static;
+            }
+
+            .billing-form .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .billing-wrapper {
+                padding: 0.5rem;
+            }
+
+            .billing-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .billing-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .billing-form {
+                padding: 1.5rem;
+            }
+
+            .cart-sidebar {
+                padding: 1.5rem;
+            }
+
+            .payment-icons i {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cart-item {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .cart-item .item-info {
+                width: 100%;
+            }
+
+            .cart-total .total-row.grand-total {
+                font-size: 1.1rem;
+            }
+
+            .billing-form .submit-btn {
+                font-size: 0.95rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ===== BRAND ===== -->
+        <div class="brand">TENZIC <span>TECHNOLOGIES</span> BW</div>
+
+        <!-- ===== TOP NAV ===== -->
+        <div class="topnav">
+            <a href="home.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="gadgets.html">Gadgets</a>
+            <a class="active" href="billing.html">Checkout</a>
+        </div>
+
+        <!-- ===== BILLING HEADER ===== -->
+        <div class="billing-header">
+            <h2><i class="fa fa-shopping-cart" style="color: #fbbf24;"></i> Checkout</h2>
+            <p>
+                Please confirm that you have added the correct products and that the amount is correct before checking out.
+                <br>For more details and services <a href="services.html">contact our agents</a>.
+            </p>
+        </div>
+
+        <!-- ===== BILLING GRID ===== -->
+        <div class="billing-grid">
+
+            <!-- ===== BILLING FORM ===== -->
+            <div class="billing-form">
+                <form id="checkoutForm" action="/api/checkout" method="POST">
+                    <input type="hidden" name="_csrf" id="csrfToken">
+
+                    <h3><i class="fa fa-address-card-o" style="color: #fbbf24;"></i> Billing Address</h3>
+
+                    <div class="form-group">
+                        <label for="fname"><i class="fa fa-user"></i> Full Name</label>
+                        <input type="text" id="fname" name="firstname" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adr"><i class="fa fa-address-card-o"></i> Residential Address</label>
+                        <input type="text" id="adr" name="address" placeholder="Block 6, Plot 100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="district"><i class="fa fa-institution"></i> District</label>
+                        <input type="text" id="district" name="district" placeholder="South-East" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="town"><i class="fa fa-building"></i> Town</label>
+                            <input type="text" id="town" name="town" placeholder="Gaborone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city"><i class="fa fa-globe"></i> City</label>
+                            <input type="text" id="city" name="city" placeholder="Gaborone" required>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 1.5rem;"><i class="fa fa-credit-card" style="color: #fbbf24;"></i> Payment</h3>
+
+                    <label style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">Accepted Cards</label>
+                    <div class="payment-icons">
+                        <i class="fa fa-cc-visa"></i>
+                        <i class="fa fa-cc-amex"></i>
+                        <i class="fa fa-cc-mastercard"></i>
+                        <i class="fa fa-cc-discover"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cname"><i class="fa fa-user"></i> Name on Card</label>
+                        <input type="text" id="cname" name="cardname" placeholder="Pitso P Sethibe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ccnum"><i class="fa fa-credit-card"></i> Credit Card Number</label>
+                        <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expmonth"><i class="fa fa-calendar"></i> Exp Month</label>
+                            <input type="text" id="expmonth" name="expmonth" placeholder="September" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expyear"><i class="fa fa-calendar"></i> Exp Year</label>
+                            <input type="text" id="expyear" name="expyear" placeholder="2028" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cvv"><i class="fa fa-lock"></i> CVV</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="352" required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" checked="checked" name="sameadr" id="sameadr">
+                        <label for="sameadr">Shipping address same as billing</label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fa fa-check-circle"></i> Complete Order
+                    </button>
+                </form>
+            </div>
+
+            <!-- ===== CART SIDEBAR ===== -->
+            <div class="cart-sidebar">
+                <h4>
+                    <span><i class="fa fa-shopping-cart" style="color: #fbbf24;"></i> Your Cart</span>
+                    <span class="price" id="cartCount">0 items</span>
+                </h4>
+
+                <div id="cartItems">
+                    <div class="empty-cart">
+                        <i class="fa fa-shopping-cart"></i>
+                        <p>Your cart is empty.</p>
+                        <a href="products.html" style="color: #fbbf24;">Start Shopping →</a>
+                    </div>
+                </div>
+
+                <div class="cart-total">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal">P0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax (14%)</span>
+                        <span id="tax">P0.00</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total</span>
+                        <span id="totalPrice">P0.00</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ===== NO LOCALHOST - Use relative paths =====
+        const API_BASE = ''; // Empty means use same origin
+
+        // ===== Check Authentication =====
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/check-auth', {
+                    credentials: 'include',
+                });
+                const data = await response.json();
+                if (!data.isAuthenticated) {
+                    alert('Please log in to view and manage your cart.');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                alert('Error checking authentication. Please try again.');
+                return false;
+            }
+        }
+
+        // ===== Fetch CSRF Token =====
+        async function fetchCsrfToken() {
+            try {
+                const response = await fetch('/api/csrf-token', { credentials: 'include' });
+                const data = await response.json();
+                document.getElementById('csrfToken').value = data.csrfToken;
+                return data.csrfToken;
+            } catch (error) {
+                console.error('Error fetching CSRF token:', error);
+                return null;
+            }
+        }
+
+        // ===== Sync Cart =====
+        async function syncCart(csrfToken) {
+            try {
+                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const response = await fetch('/api/update-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken,
+                    },
+                    body: JSON.stringify({ cart }),
+                    credentials: 'include',
+                });
+                const data = await response.json();
+                if (!data.success) {
+                    console.error('Cart sync failed:', data.message);
+                }
+            } catch (error) {
+                console.error('Error syncing cart:', error);
+            }
+        }
+
+        // ===== Update Cart Item =====
+        async function updateCart(index, action, value = null) {
+            try {
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                if (action === 'updateQuantity') {
+                    const quantity = parseInt(value);
+                    if (quantity < 1) return;
+                    cart[index].quantity = quantity;
+                } else if (action === 'remove') {
+                    cart.splice(index, 1);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                const csrfToken = await fetchCsrfToken();
+                if (csrfToken) {
+                    await syncCart(csrfToken);
+                    await updateCartDisplay();
+                }
+            } catch (error) {
+                console.error('Error updating cart:', error);
+            }
+        }
+
+        // ===== Update Cart Display =====
+        async function updateCartDisplay() {
+            try {
+                const response = await fetch('/api/total-price', { credentials: 'include' });
+                const data = await response.json();
+                const cartItemsContainer = document.getElementById('cartItems');
+                const totalPriceElement = document.getElementById('totalPrice');
+                const subtotalElement = document.getElementById('subtotal');
+                const taxElement = document.getElementById('tax');
+                const cartCountElement = document.getElementById('cartCount');
+
+                if (data.success && data.cartItems.length > 0) {
+                    const taxRate = 0.14;
+                    const subtotal = data.total;
+                    const tax = subtotal * taxRate;
+                    const total = subtotal + tax;
+
+                    cartItemsContainer.innerHTML = '';
+                    data.cartItems.forEach((item, index) => {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'cart-item';
+                        itemElement.innerHTML = `
+                            <div class="item-info">
+                                <span>${item.name}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="quantity-control">
+                                    <button onclick="updateCart(${index}, 'updateQuantity', ${item.quantity - 1})">−</button>
+                                    <input type="number" value="${item.quantity}" min="1" onchange="updateCart(${index}, 'updateQuantity', this.value)">
+                                    <button onclick="updateCart(${index}, 'updateQuantity', ${item.quantity + 1})">+</button>
+                                </div>
+                                <span class="item-price">P${(item.price * item.quantity).toFixed(2)}</span>
+                                <button class="remove-btn" onclick="updateCart(${index}, 'remove')">✕</button>
+                            </div>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+
+                    totalPriceElement.textContent = `P${total.toFixed(2)}`;
+                    subtotalElement.textContent = `P${subtotal.toFixed(2)}`;
+                    taxElement.textContent = `P${tax.toFixed(2)}`;
+                    cartCountElement.textContent = `${data.cartItems.length} items`;
+                    window.cartItems = data.cartItems;
+                } else {
+                    cartItemsContainer.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fa fa-shopping-cart"></i>
+                            <p>Your cart is empty.</p>
+                            <a href="products.html" style="color: #fbbf24;">Start Shopping →</a>
+                        </div>
+                    `;
+                    totalPriceElement.textContent = 'P0.00';
+                    subtotalElement.textContent = 'P0.00';
+                    taxElement.textContent = 'P0.00';
+                    cartCountElement.textContent = '0 items';
+                    window.cartItems = [];
+                }
+            } catch (error) {
+                console.error('Error fetching cart:', error);
+                document.getElementById('cartItems').innerHTML = '<p style="color: var(--text-muted);">Error loading cart.</p>';
+            }
+        }
+
+        // ===== Handle Checkout =====
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const billingInfo = Object.fromEntries(formData);
+
+            try {
+                const csrfToken = await fetchCsrfToken();
+                if (!csrfToken) {
+                    alert('Failed to fetch CSRF token. Please try again.');
+                    return;
+                }
+
+                const response = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken,
+                    },
+                    body: JSON.stringify({ cartItems: window.cartItems || [], billingInfo }),
+                    credentials: 'include',
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('🎉 ' + result.message);
+                    localStorage.removeItem('cart');
+                    await syncCart(csrfToken);
+                    await updateCartDisplay();
+                    window.location.href = 'home.html';
+                } else {
+                    alert('Checkout failed: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error submitting checkout:', error);
+                alert('Checkout failed. Please try again.');
+            }
+        });
+
+        // ===== Initialize =====
+        window.onload = async () => {
+            const isAuthenticated = await checkAuthStatus();
+            if (isAuthenticated) {
+                const csrfToken = await fetchCsrfToken();
+                if (csrfToken) {
+                    await syncCart(csrfToken);
+                    await updateCartDisplay();
+                }
+            }
+        };
+    </script>
+</body>
+</html>
